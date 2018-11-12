@@ -4,6 +4,7 @@ import time
 from tqdm import tqdm
 from PIL import Image
 from threading import Lock
+import matplotlib.pyplot as pyplot
 
 lock = Lock()
 
@@ -22,7 +23,7 @@ def tensorflow_session():
     return sess
 
 
-optimized = True
+optimized = False
 if optimized:
     # Optimized model. Twice as fast as
     # 1. we freeze conditional network (label is always 0)

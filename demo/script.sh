@@ -10,6 +10,9 @@ pip install flask flask_cors tqdm opencv-python imutils dlib imageio
 # Get model weights
 curl https://storage.googleapis.com/glow-demo/large3/graph_optimized.pb > graph_optimized.pb
 
+# If blocksparse doesn't install, use unoptimized model (and set optimized=False in model.py)
+curl https://storage.googleapis.com/glow-demo/large3/graph_unoptimized.pb > graph_unoptimized.pb
+
 # Get manipulation vectors
 curl https://storage.googleapis.com/glow-demo/z_manipulate.npy > z_manipulate.npy
 
@@ -20,6 +23,4 @@ curl https://storage.googleapis.com/glow-demo/shape_predictor_68_face_landmarks.
 curl https://storage.googleapis.com/glow-demo/blocksparse-1.0.0-py2.py3-none-any.whl > blocksparse-1.0.0-py2.py3-none-any.whl
 pip install blocksparse-1.0.0-py2.py3-none-any.whl
 
-# If blocksparse doesn't install, use unoptimized model (and set optimized=False in model.py)
-# curl https://storage.googleapis.com/glow-demo/large3/graph_unoptimized.pb > graph_unoptimized.pb
 
