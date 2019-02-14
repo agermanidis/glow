@@ -1,0 +1,7 @@
+name: GLOW
+description: Generative Flow with Invertible 1x1 Convolutions
+license: MIT
+base: python3.5
+entrypoint: python demo/server.py
+build_steps:
+  - pip install -r requirements.txt
