@@ -108,6 +108,7 @@ class FaceWarper:
         return image
 
 
+
 # load face detection and warping
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
@@ -129,7 +130,7 @@ def setup():
 	return None
 
 
-@glow.command('detect', inputs={'image': 'image'}, outputs={'output': 'image'})
+@glow.command('convert', inputs={'image': 'image'}, outputs={'output': 'image'})
 def detect(sess, inp):
 	img = np.array(inp['image'])
 	z_addition = 1.1 * z_manipulate[tags.index('Blond_Hair')]
