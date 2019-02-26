@@ -133,7 +133,7 @@ def setup():
 @glow.command('convert', inputs={'image': 'image'}, outputs={'output': 'image'})
 def detect(sess, inp):
 	img = np.array(inp['image'])
-	z_addition = 1.1 * z_manipulate[tags.index('Blond_Hair')]
+	z_addition = 0.95 * z_manipulate[tags.index('Attractive')]
 	gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 	rects = detector(gray, 2)
 	if len(rects) == 0 or not model_ready:
