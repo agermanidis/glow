@@ -150,6 +150,10 @@ def main(device_id, width, disp_width, disp_source, horizontal, num_sec):
 	# tags that can be modified
 	tags = "5_o_Clock_Shadow Arched_Eyebrows Attractive Bags_Under_Eyes Bald Bangs Big_Lips Big_Nose Black_Hair Blond_Hair Blurry Brown_Hair Bushy_Eyebrows Chubby Double_Chin Eyeglasses Goatee Gray_Hair Heavy_Makeup High_Cheekbones Male Mouth_Slightly_Open Mustache Narrow_Eyes No_Beard Oval_Face Pale_Skin Pointy_Nose Receding_Hairline Rosy_Cheeks Sideburns Smiling Straight_Hair Wavy_Hair Wearing_Earrings Wearing_Hat Wearing_Lipstick Wearing_Necklace Wearing_Necktie Young"
 	tags = tags.split()
+	selected_tags = "Young Attractive Blond_Hair Eyeglasses Goatee Gray_Hair Heavy_Makeup Male Bald Bangs Big_Lips Big_Nose 5_o_Clock_Shadow High_Cheekbones Arched_Eyebrows Bags_Under_Eyes Black_Hair Blurry Brown_Hair Bushy_Eyebrows Chubby Double_Chin Mouth_Slightly_Open Mustache Narrow_Eyes No_Beard Oval_Face Pale_Skin Pointy_Nose Receding_Hairline Rosy_Cheeks Sideburns Smiling Straight_Hair Wavy_Hair Wearing_Earrings Wearing_Hat Wearing_Lipstick Wearing_Necklace Wearing_Necktie ".split()
+	idx_t = 0
+	z_mult = 1
+	z_mag = 0.75
 
 	# load camera and cv
 	cam = cv2.VideoCapture(device_id)
@@ -164,7 +168,7 @@ def main(device_id, width, disp_width, disp_source, horizontal, num_sec):
 		frame = cv2.flip(frame, 1)
 		img = np.copy(frame)
 
-		z_addition = 1.3333 * z_manipulate[tags.index('Young')]
+		z_addition = z_mult * z_mag * z_manipulate[tags.index(selected_tags[idx_t])]
 		gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 		rects = detector(gray, 2)
 		if len(rects) > 0:
@@ -180,9 +184,15 @@ def main(device_id, width, disp_width, disp_source, horizontal, num_sec):
 		if key_ == 27:
 			break
 		elif key_ == ord('a'):
-			print('left')
+			idx_t = (idx_t + len(selected_tags) - 1) % len(selected_tags)
 		elif key_ == ord('s'):
-			print('right')
+			idx_t = (idx_t + 1) % len(selected_tags)
+		elif key_ == ord('z'):
+			z_mag = max(0, z_mag-0.05)
+		elif key_ == ord('x'):
+			z_mag = min(3, z_mag+0.05)
+		elif key_ == ord('c'):
+			z_mult *= -1
 
 	# done
 	cam.release()

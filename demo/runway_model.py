@@ -1,4 +1,4 @@
-from runway import RunwayModel
+import runway
 from model import *
 from imutils.face_utils.helpers import FACIAL_LANDMARKS_68_IDXS
 from imutils.face_utils.helpers import FACIAL_LANDMARKS_5_IDXS
@@ -119,10 +119,9 @@ tags = "5_o_Clock_Shadow Arched_Eyebrows Attractive Bags_Under_Eyes Bald Bangs B
 tags = tags.split()
 
 # launch Runway
-glow = RunwayModel()
 model_ready = False
 
-@glow.setup
+@runway.setup(options={"model_name": runway.text })
 def setup():
 	global model_ready
 	print('setup model')
@@ -130,10 +129,12 @@ def setup():
 	return None
 
 
-@glow.command('convert', inputs={'image': 'image'}, outputs={'output': 'image'})
+@runway.command('convert', inputs={'image': runway.image, 'feature': runway.category(choices=tags, default=tags[2]), 'amount': runway.number}, outputs={'output': runway.image})
 def detect(sess, inp):
 	img = np.array(inp['image'])
-	z_addition = 0.95 * z_manipulate[tags.index('Attractive')]
+    amount = inp['amount']
+    feature = inp['feature']
+	z_addition = amount * z_manipulate[tags.index(feature)]
 	gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 	rects = detector(gray, 2)
 	if len(rects) == 0 or not model_ready:
@@ -146,4 +147,4 @@ def detect(sess, inp):
 
 
 if __name__ == '__main__':
-    glow.run()
+    runway.run()
