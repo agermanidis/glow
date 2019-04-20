@@ -118,32 +118,27 @@ warper = FaceWarper(predictor, desiredFaceWidth=256, desiredLeftEye=(0.371, 0.48
 tags = "5_o_Clock_Shadow Arched_Eyebrows Attractive Bags_Under_Eyes Bald Bangs Big_Lips Big_Nose Black_Hair Blond_Hair Blurry Brown_Hair Bushy_Eyebrows Chubby Double_Chin Eyeglasses Goatee Gray_Hair Heavy_Makeup High_Cheekbones Male Mouth_Slightly_Open Mustache Narrow_Eyes No_Beard Oval_Face Pale_Skin Pointy_Nose Receding_Hairline Rosy_Cheeks Sideburns Smiling Straight_Hair Wavy_Hair Wearing_Earrings Wearing_Hat Wearing_Lipstick Wearing_Necklace Wearing_Necktie Young"
 tags = tags.split()
 
-# launch Runway
-model_ready = False
+command_inputs = {
+    'image': runway.image,
+    'feature': runway.category(choices=tags, default=tags[2]),
+    'amount': runway.number(default=0.5, min=0, max=1, step=0.1)
+}
 
-@runway.setup(options={"model_name": runway.text })
-def setup():
-	global model_ready
-	print('setup model')
-	model_ready = True
-	return None
-
-
-@runway.command('convert', inputs={'image': runway.image, 'feature': runway.category(choices=tags, default=tags[2]), 'amount': runway.number}, outputs={'output': runway.image})
+@runway.command('manipulate', inputs=command_inputs, outputs={'output': runway.image})
 def detect(sess, inp):
-	img = np.array(inp['image'])
+    img = np.array(inp['image'])
     amount = inp['amount']
     feature = inp['feature']
-	z_addition = amount * z_manipulate[tags.index(feature)]
-	gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-	rects = detector(gray, 2)
-	if len(rects) == 0 or not model_ready:
-		print('nothing found')
-		return dict(output=img)
-	img = warper.align(img[:, :, ::-1], gray, rects[0], z_addition)[:, :, ::-1]
-	img = np.array(Image.fromarray(img).convert('RGB'))
-	output = np.clip(img, 0, 255).astype(np.uint8)
-	return dict(output=output)
+    z_addition = amount * z_manipulate[tags.index(feature)]
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    rects = detector(gray, 2)
+    if len(rects) == 0:
+        print('nothing found')
+        return dict(output=img)
+    img = warper.align(img[:, :, ::-1], gray, rects[0], z_addition)[:, :, ::-1]
+    img = np.array(Image.fromarray(img).convert('RGB'))
+    output = np.clip(img, 0, 255).astype(np.uint8)
+    return dict(output=output)
 
 
 if __name__ == '__main__':
