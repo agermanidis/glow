@@ -3,5 +3,5 @@ cuda: 9.0
 entrypoint: python demo/runway_model.py
 framework: tensorflow
 build_steps:
-  - pip install runway-python==0.0.65
+  - pip install runway-python
   - sh demo/script.sh 
